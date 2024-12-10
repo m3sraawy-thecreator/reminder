@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:reminder/controllers/task_controller.dart';
+import 'package:reminder/models/Task.dart';
 import 'package:reminder/ui/widget/input_field.dart';
-
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
 
@@ -11,6 +12,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.put(TaskController());
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -131,9 +133,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      setState(() {
                         _vakdateDate();
-                      });
                     },
                     child: Text('Create Reminder'))
               ],
@@ -146,12 +146,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _vakdateDate() {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      _addTaskToDb();
       Get.back();
     } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
       Get.snackbar('Required', 'All fields are required');
     }
   }
 
+  _addTaskToDb() async {
+    int value = await _taskController.addTask(
+    task:Task(
+      note: _noteController.text,
+      title: _titleController.text,
+      data: DateFormat.yMd().format(_selectedDate),
+      startTime: _startTime,
+      endTime: _endTime,
+      remind: _selectedRemind,
+      repeat: _selectedRepeat,
+      isCompleted: 0,
+    )
+   );
+    print("My id is"+"$value");
+  }
   _getDateFromUser() async {
     DateTime? pickerDate = await showDatePicker(
       initialDate: DateTime.now(),

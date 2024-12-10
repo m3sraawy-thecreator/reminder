@@ -30,13 +30,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: ^2.0.2
+  sqflite: ^2.4.1
   path_provider: ^2.0.11
   get_storage:
   get: ^4.6.5
   intl:
   date_picker_timeline:
-  sqflite_android: 
   google_fonts:
 
 
